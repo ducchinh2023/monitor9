@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>ENVIRONMENTAL MONITORING STATION</title>
+	
+	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/7.9.1/firebase-app.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/7.7.0/firebase-database.js"></script>
+	<link href="https://use.fontawesome.com/releases/v5.0.4/css/all.css" rel="stylesheet">
+	<link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'>
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" type="text/css" href="style.css">
+	<script src="script.js"></script>
+
+</head> 
+<body>
+<div class="container">
+ <div class="header">
+    <div class="center">
+		<h3>ENVIRONMENTAL MONITORING STATION</h3>
+		<div class="centerbot">
+		<div class="img-wrap1">
+			<img src="https://assets.codepen.io/1462889/grass.png" alt="">
+			</div>	
+			<div class="img-wrap2">
+				<img src="https://assets.codepen.io/1462889/Ivy.png" alt="">
+				</div>
+			<div class="img-wrap3">
+				<img src="https://assets.codepen.io/1462889/IvyRock.png" alt="">
+				</div>
+			</div>
+</div>
+</div>
+
+<div class="sidebar">
+	
+    <div class="logo-details">
+     
+      
+        <i class='bx bx-menu' id="btn" ></i>
+		
+		<div class="logo_name">IoT</div>
+		<i class='bx bxl-c-plus-plus icon'></i>	
+		
+    </div>
+    <ul class="nav-list">
+      
+      <li>
+        <a href="#" class="activee" onclick="switchPage(event, 'ROOM')" >
+          <i class='bx bx-grid-alt'></i>
+          <span class="links_name">Dashboard</span>
+        </a>
+         <span class="tooltip">Dashboard</span>
+      </li>
+      <li>
+       <a href="#" onclick="switchPage(event, 'ROOM2')">
+         <i class='bx bx-user' ></i>
+         <span class="links_name">User</span>
+       </a>
+       <span class="tooltip">User</span>
+     </li>
+     <li>
+       <a href="#"onclick="switchPage(event, 'ROOM3')">
+         <i class='bx bx-chat' ></i>
+         <span class="links_name">ACCOUNTANT</span>
+       </a>
+       <span class="tooltip">ACCOUNTANT</span>
+     </li>
+     <li>
+       <a href="#"onclick="switchPage(event, 'ROOM4')">
+         <i class='bx bx-pie-chart-alt-2' ></i>
+         <span class="links_name">WEATHER FORECAST</span>
+       </a>
+       <span class="tooltip">WEATHER FORECAST</span>
+     </li>
+ 
+
+     <li class="profile">
+         <div class="profile-details">
+           <!--<img src="profile.jpg" alt="profileImg">-->
+           <div class="name_job">
+             <div class="name">Smart Garden</div>
+             <div class="job">Log Out</div>
+           </div>
+         </div>
+         <i class='bx bx-log-out' id="log_out" ></i>
+     </li>
+    </ul>
+	<script>
+		function switchPage(evt, pageName) {
+			var i, sections, links;
+			sections = document.getElementsByTagName("section");
+			for (i = 0; i < sections.length; i++) {
+			  sections[i].style.display = "none";
+			}
+			links = document.getElementsByClassName("activee");
+			for (i = 0; i < links.length; i++) {
+			  links[i].classList.remove("activee");
+			}
+			var targetSection = document.getElementById(pageName);
+			if (targetSection.style.display !== "flex") {
+			  targetSection.style.display = "flex";
+			  evt.currentTarget.classList.add("active");
+		}
+	}
+	  </script>
+  </div>
+<script>
+let sidebar = document.querySelector(".sidebar");
+let closeBtn = document.querySelector("#btn");
+let searchBtn = document.querySelector(".bx-search");
+
+closeBtn.addEventListener("click", ()=>{
+  sidebar.classList.toggle("open");
+  menuBtnChange();//calling the function(optional)
+});
+
+searchBtn.addEventListener("click", ()=>{ // Sidebar open when you click on the search iocn
+  sidebar.classList.toggle("open");
+  menuBtnChange(); //calling the function(optional)
+});
+
+// following are the code to change sidebar button(optional)
+function menuBtnChange() {
+ if(sidebar.classList.contains("open")){
+   closeBtn.classList.replace("bx-menu", "bx-menu-alt-right");//replacing the iocns class
+ }else {
+   closeBtn.classList.replace("bx-menu-alt-right","bx-menu");//replacing the iocns class
+ }
+}
+</script>
+<div class="T1">
+	
+	<button class="button">Menu</button>
+	<div class="cardM">
+		THUONG - HIEN - CHINH
+		
+		<div class="marquee-container">
+			<div class="marquee-text">
+			  <span class="blink">  Chế tạo trạm đo môi trường khí và đưa dữ liệu lên Internet</span>
+			</div>
+		  </div>
+	</div>
+    <script>
+      const button = document.querySelector(".button");
+	  
+
+      button.addEventListener("click", (e) => {
+		if (sidebar.style.left === "-200px") {
+			sidebar.style.left = "0";
+		  } else {
+			sidebar.style.left = "-200px";
+		  }
+        e.preventDefault;
+        button.classList.add("animate");
+        setTimeout(() => {
+          button.classList.remove("animate");
+        }, 600);
+      });
+    </script>
+	
+	<input type="checkbox" id="day-night"><label for="day-night"></label>
+	
+	<div class="moon-sun"></div>
+	
+	<script>
+		// Lấy phần tử checkbox và body
+var checkbox = document.getElementById("day-night");
+var body = document.body;
+
+// Thêm sự kiện nhấn chuột cho checkbox
+checkbox.addEventListener("click", function () {
+  // Kiểm tra xem checkbox có được chọn hay không
+  if (checkbox.checked) {
+    // Nếu checkbox được chọn, thêm lớp dark-mode vào body
+    body.classList.add("dark-mode");
+  } else {
+    // Nếu checkbox không được chọn, xóa lớp dark-mode khỏi body
+    body.classList.remove("dark-mode");
+  }
+});
+	</script>
+</div>
+<section id="ROOM" > 
+<div class ="slider">
+	<div class="contain-left">
+		
+	  <div class="headslider rounded-borderr grey-colorr ">
+	   DATA VISUALIZATION
+	  </div>
+	  <div class="slider-left-top">
+		<canvas id="canvas-a" width="600" height="350"></canvas>
+		<canvas id="canvas-b"width="600"height="350"></canvas>
+		<canvas id="canvas-c"width="600"height="350"></canvas>
+							
+		<script>
+			// Dữ liệu biểu đồ
+			
+			// Tạo line chart trên canvas A
+			const ctxA = document.getElementById('canvas-a').getContext('2d');
+			const chartA = new Chart(ctxA, {
+				type: 'line',
+				data: {
+					labels: [],
+					datasets: [
+					
+					{
+						label: 'Temp',
+						data: [],
+						borderColor: 'red',
+						fill: false
+					}, {
+						label: 'Hum',
+						data: [],
+						borderColor: 'blue',
+						fill: false
+					}, {
+						label: 'Light',
+						data: [],
+						borderColor: 'green',
+						fill: false
+					}, {
+						label: 'GAS',
+						data: [],
+						borderColor: 'orange',
+						fill: false
+					},{
+						label: 'Room Management',
+						data: [],
+						borderColor: 'pink',
+						fill: false
+					}]
+				},
+				options: {
+					responsive: true,
+					scales: {
+						xAxes: [{
+							type: 'time',
+							time: {
+								displayFormats: {
+									second: 'h:mm:ss a'
+								}
+							}
+						}],
+						yAxes: [{
+							ticks: {
+								beginAtZero: true
+							}
+						}]
+					}
+				}
+			});
+tempRef.on("value", function(snapshot) {
+    var now = new Date();
+    var time = now.getHours() + ':' + now.getMinutes() + ':' + now.getSeconds();
+    chartA.data.datasets[0].data.push({x: now, y: snapshot.val()});
+    chartA.data.labels.push(time);
+    chartA.update();
+});
+
+humidRef.on("value", function(snapshot) {
+    var now = new Date();
+    var time = now.getHours() + ':' + now.getMinutes() + ':' + now.getSeconds();
+    chartA.data.datasets[1].data.push({x: now, y: snapshot.val()});
+	chartA.data.labels.push(time);
+    chartA.update();
+});
+
+lightRef.on("value", function(snapshot) {
+    var now = new Date();
+    var time = now.getHours() + ':' + now.getMinutes() + ':' + now.getSeconds();
+    chartA.data.datasets[2].data.push({x: now, y: snapshot.val()});
+    chartA.data.labels.push(time);
+    chartA.update();
+});
+
+soilRef.on("value", function(snapshot) {
+    var now = new Date();
+    var time = now.getHours() + ':' + now.getMinutes() + ':' + now.getSeconds();
+    chartA.data.datasets[3].data.push({x: now, y: snapshot.val()});
+    chartA.data.labels.push(time);
+    chartA.update();
+});
+const ctxB = document.getElementById('canvas-b').getContext('2d');
+const chartB = new Chart(ctxB, {
+	type: 'line',
+	data: {
+		labels: [],
+		datasets: [
+					
+					{
+						label: 'Temp',
+						data: [],
+						borderColor: 'Orange',
+						fill: false
+					}, {
+						label: 'Hum',
+						data: [],
+						borderColor: 'Green ',
+						fill: false
+					}, {
+						label: 'Light',
+						data: [],
+						borderColor: 'Yellow ',
+						fill: false
+					}, {
+						label: 'GAS',
+						data: [],
+						borderColor: 'brown ',
+						fill: false
+					},{
+						label: 'storegare',
+						data: [],
+						borderColor: 'blue',
+						fill: false
+					}]
+				},
+	options: {
+		responsive: true,
+		scales: {
+			xAxes: [{
+				type: 'time',
+				time: {
+					displayFormats: {
+						second: 'h:mm:ss a'
+					}
+				}
+			}],
+			yAxes: [{
+				ticks: {
+					beginAtZero: true
+				}
+			}]
+		}
+	}
+});
+tempRef2.on("value", function(snapshot) {
+var now = new Date();
+var time = now.getHours() + ':' + now.getMinutes() + ':' + now.getSeconds();
+chartB.data.datasets[0].data.push({x: now, y: snapshot.val()});
+chartB.data.labels.push(time);
+chartB.update();
+});
+
+humidRef2.on("value", function(snapshot) {
+var now = new Date();
+var time = now.getHours() + ':' + now.getMinutes() + ':' + now.getSeconds();
+chartB.data.datasets[1].data.push({x: now, y: snapshot.val()});
+chartB.data.labels.push(time);
+chartB.update();
+});
+
+lightRef2.on("value", function(snapshot) {
+var now = new Date();
+var time = now.getHours() + ':' + now.getMinutes() + ':' + now.getSeconds();
+chartB.data.datasets[2].data.push({x: now, y: snapshot.val()});
+chartB.data.labels.push(time);
+chartB.update();
+});
+
+soilRef2.on("value", function(snapshot) {
+var now = new Date();
+var time = now.getHours() + ':' + now.getMinutes() + ':' + now.getSeconds();
+chartB.data.datasets[3].data.push({x: now, y: snapshot.val()});
+chartB.data.labels.push(time);
+chartB.update();
+});
+
+		  </script>
+		 
+	</div>
+	
+ 
+  <div class="cchart">
+	<button class="menu__item active" style="--bgColorItem: #ff8c00;" >
+	  <svg class="icon" viewBox="0 0 24 24">
+		<path fill="none" stroke="white" stroke-width="3" d="M2,18 6,12 10,16 14,11 18,15" />
+  <line x1="2" y1="2" x2="2" y2="18" stroke="white" stroke-width="1" />
+  <line x1="2" y1="18" x2="20" y2="18" stroke="white" stroke-width="1" />
+</svg>
+	</button>
+
+	<button  class="menu__item" style="--bgColorItem: #f54888;">
+	  <svg class="icon" viewBox="0 0 24 24">
+		<rect x="3" y="16" width="4" height="4" fill="currentColor" />
+  <rect x="8" y="12" width="6" height="8" fill="currentColor" />
+  <rect x="15" y="6" width="8" height="14" fill="currentColor" />
+  <line x1="2" y1="20" x2="22" y2="20" stroke="currentColor" stroke-width="1" />
+  <line x1="2" y1="4" x2="2" y2="20" stroke="currentColor" stroke-width="1" />
+</svg>
+	</button>
+
+	<button class="menu__item" style="--bgColorItem: #4343f5;" >
+	  <svg class="icon" viewBox="0 0 24 24">
+		 <circle cx="12" cy="12" r="8" fill="black" stroke="white" stroke-width="4" />
+  <path fill="none" stroke="black" stroke-width="4" d="M12,4 A8,8 0 0,1 19.39,9.39 L12,12 L12,4" />
+</svg>
+	</button>
+
+	<div class="menu__border"></div>
+  </div>
+
+  <div class="svg-container">
+	<svg viewBox="0 0 202.9 45.5" >
+	  <clipPath id="cchart" clipPathUnits="objectBoundingBox" transform="scale(0.0049285362247413 0.021978021978022)">
+		<path  d="M6.7,45.5c5.7,0.1,14.1-0.4,23.3-4c5.7-2.3,9.9-5,18.1-10.5c10.7-7.1,11.8-9.2,20.6-14.3c5-2.9,9.2-5.2,15.2-7
+		  c7.1-2.1,13.3-2.3,17.6-2.1c4.2-0.2,10.5,0.1,17.6,2.1c6.1,1.8,10.2,4.1,15.2,7c8.8,5,9.9,7.1,20.6,14.3c8.3,5.5,12.4,8.2,18.1,10.5
+		  c9.2,3.6,17.6,4.2,23.3,4H6.7z"/>
+	  </clipPath>
+	</svg>
+  </div>
+  <script>
+	const liA = document.querySelectorAll(".menu__item")[0];
+	const liB = document.querySelectorAll(".menu__item")[1];
+	const liC = document.querySelectorAll(".menu__item")[2];
+	const canvasA = document.querySelector('#canvas-a');
+	const canvasB = document.querySelector('#canvas-b');
+	const canvasC = document.querySelector('#canvas-c');
+const menu = document.querySelector(".cchart");
+const menuItems = menu.querySelectorAll(".menu__item");
+const menuBorder = menu.querySelector(".menu__border");
+let activeItem = menu.querySelector(".active");
+
+function clickItem(item, index) {
+  menu.style.removeProperty("--timeOut");
+  if (activeItem == item) return;
+  if (activeItem) {
+    activeItem.classList.remove("active");
+  }
+  item.classList.add("active");
+  activeItem = item;
+  offsetMenuBorder(activeItem, menuBorder);
+}
+
+function offsetMenuBorder(element, menuBorder) {
+  const offsetActiveItem = element.getBoundingClientRect();
+  const left = Math.floor(offsetActiveItem.left - menu.offsetLeft - (menuBorder.offsetWidth  - offsetActiveItem.width) / 2) +  "px";
+  menuBorder.style.transform = `translate3d(${left}, 0 , 0)`;
+}
+menuItems.forEach((item, index) => {
+  item.addEventListener("click", () => clickItem(item, index));
+});
+
+
+  </script>
+  <script>
+	
+	canvasB.style.display = 'none';
+	canvasC.style.display = 'none';
+	
+	// bắt sự kiện click vào các thẻ Li
+	liA.addEventListener('click', () => {
+	// ẩn tất cả các Canvas
+	canvasA.style.display = 'none';
+	canvasB.style.display = 'none';
+	canvasC.style.display = 'none';
+	// hiển thị Canvas tương ứng
+	canvasA.style.display = 'block';
+	});
+	
+	liB.addEventListener('click', () => {
+	// ẩn tất cả các Canvas
+	canvasA.style.display = 'none';
+	canvasB.style.display = 'none';
+	canvasC.style.display = 'none';
+	// hiển thị Canvas tương ứng
+	canvasB.style.display = 'block';
+	});
+	
+	liC.addEventListener('click', () => {
+	// ẩn tất cả các Canvas
+	canvasA.style.display = 'none';
+	canvasB.style.display = 'none';
+	canvasC.style.display = 'none';
+	// hiển thị Canvas tương ứng
+	canvasC.style.display = 'block';
+	});
+	  </script>
+	</div>
+	<div class="sen1">
+		<div class="clock">
+			<div class="second">
+			  <div></div>
+			  <div></div>
+			  <div></div>
+			  <div></div>
+			  <div></div>
+			  <div></div>
+			  <div></div>
+			  <div></div>
+			  <div></div>
+			  <div></div>
+			  <div></div>
+			  <div></div>
+			  <div></div>
+			  <div></div>
+			  <div></div>
+			  <div></div>
+			  <div></div>
+			  <div></div>
+			  <div></div>
+			  <div></div>
+			  <div></div>
+			  <div></div>
+			  <div></div>
+			  <div></div>
+			  <div></div>
+			  <div></div>
+			  <div></div>
+			  <div></div>
+			  <div></div>
+			  <div></div>
+			</div>
+			<div class="minute">
+			  <div></div>
+			  <div></div>
+			  <div></div>
+			  <div></div>
+			  <div></div>
+			  <div></div>
+			  <div></div>
+			  <div></div>
+			  <div></div>
+			  <div></div>
+			  <div></div>
+			  <div></div>
+			  <div></div>
+			  <div></div>
+			  <div></div>
+			  <div></div>
+			  <div></div>
+			  <div></div>
+			  <div></div>
+			  <div></div>
+			  <div></div>
+			  <div></div>
+			  <div></div>
+			  <div></div>
+			  <div></div>
+			  <div></div>
+			  <div></div>
+			  <div></div>
+			  <div></div>
+			  <div></div>
+			</div>
+			<div class="hour">
+			  <div></div>
+			  <div></div>
+			  <div></div>
+			  <div></div>
+			  <div></div>
+			  <div></div>
+			</div>
+			<div class="clock-time">
+			  <p></p>
+			</div>
+		  </div>
+		  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+	
+	</div>
+	<div class="contain-right">
+	  <div class="slider-right">
+	
+		<div class="sen">
+		  <div class="card mt-4 d-flex flex-column rounded-borderrr grey-color py-4 px-3">
+			<div class="card-img">
+				<img src="img/nhiet.png" alt="">
+			</div>
+			<div class="card-title">
+				Temperature:
+			</div>
+			<div class="card-price">
+			   <span id="temperature"></span> &deg;C
+
+			</div>
+			<div class="Nhietmin"> 
+					<h2>Min:</h2>
+					<Span>23  &deg;C</Span>
+				</div>
+			<div class="Nhietmax"> 
+				<h2>Max: 29 &deg;C</h2>
+				<h2>AVE:26 &deg;C</h2>
+				</div>
+	 </div>
+		   
+		</div>
+		<div class="sen">
+		  <div class="card2 mt-4 d-flex flex-column rounded-borderrr grey-color py-4 px-3">
+			<div class="card-img2">
+				<img src="img/nuoc.png" alt="">
+			</div>
+			<div class="card-title2">
+			  Humidity:
+			</div>
+			<div class="card-price2">
+			  <span id="humidity"></span> %
+			</div>
+			<div class="Nhietmin2"> 
+					<h2>Min: 40 %</h2>
+				
+				</div>
+			<div class="Nhietmax2"> 
+				<h2>Max: 80 %</h2>
+				<h2>AVE:70 %</h2>
+				</div>
+		</div>
+			
+		</div>
+		<div class="sen">
+		  <div class="card4 mt-4 d-flex flex-column rounded-borderrr grey-color py-4 px-3">
+			<div class="card-img4">
+				<img src="img/mattroi.png" alt="">
+			</div>
+			<div class="card-title4">
+				Light:
+			</div>
+			<div class="card-price4">
+			  <span id="light"></span>mW/cm2
+			</div>
+			<div class="Nhietmin4"> 
+					<h2>Min:0.5W/cm2</h2>
+					
+				</div>
+			<div class="Nhietmax4"> 
+					<h2>Max: 0.9</h2>
+					<h2>AVE: 0.7 </h2>
+				</div>
+			</div>
+		
+		</div>
+		
+		<div class="sen">
+		  <div class="card3 mt-4 d-flex flex-column rounded-borderrr grey-color py-4 px-3">
+			<div class="card-img3">
+				<img src="img/gas.png" alt="">
+			</div>
+			<div class="card-title3">
+			  Soil Moisture:
+			</div>
+			<div class="card-price3">
+			   <span id="soil"></span> mg/m3
+			</div>
+			<div class="Nhietmin3"> 
+					<h2>Min:0.05 mg/m3</h2>
+					
+				</div>
+			<div class="Nhietmax3"> 
+				<h2>Max: 0.19 </h2>
+				<h2>AVE:0.14 </h2>
+				</div>
+		</div>
+		</div>
+
+	</div>
+	</div>
+
+   </div>
+   <div class="padlock">
+	<div class="keyhole"></div>
+</div>
+   <div class="wrapper">
+		
+	<div class="cardd mt-2 d-flex flex-row justify-content-between rounded-border yellow-color px-3 py-4">
+  <div class="progress">
+	<div class="a1">
+	<a class = "icon1" >
+	  <img id="lightbulb-img" src="fan.png" alt="lightbulb">
+	</a>
+	
+	<script>
+	  const lightbulbImg = document.getElementById("lightbulb-img");
+
+	  // Thiết lập trạng thái ban đầu của đèn là tắt
+	</script>
+	<div class="b1">
+	<div class= "toggle-btn" id="unact">
+	  <div class= "inner-circle">
+
+	  </div>
+	</div>
+	<div class= "toggle-btn active" id="act" >
+	  <div class= "inner-circle">
+
+	  </div>
+	</div>
+  </div>
+  </div>
+</div>
+</div>
+<div class="cardd mt-2 d-flex flex-row justify-content-between rounded-border yyellow-color px-3 py-4">
+  <div class="progress">
+	<div class="a2">
+	<a class = "icon1" >
+	  <img id="lightbulb-img2" src="sun.png" alt="lightbulb">
+	</a>
+	<script>
+	  const lightbulbImg2 = document.getElementById("lightbulb-img2");
+	</script>
+	<div class="b2">
+	<div class= "toggle-btn1" id="unact1">
+	  <div class= "inner-circle">
+
+	  </div>
+	</div>
+	<div class= "toggle-btn1 active" id="act1" >
+	  <div class= "inner-circle">
+
+	  </div>
+	</div>
+	</div>
+  </div>
+  </div>
+</div>
+
+</div>
+<div class="search-bar">
+	<span class="microphone">
+		
+		<i class="fas fa-microphone"></i>
+		<span class="recording-icon"></span>
+	</span>
+   
+   
+  </div>
+	  <script>
+		var SpeechRecognition = SpeechRecognition || webkitSpeechRecognition;
+		  const recognition = new SpeechRecognition();
+		  const synth = window.speechSynthesis;
+		  recognition.lang = 'vi-VI';
+		  recognition.continuous = false;
+		  const microphone = document.querySelector('.microphone');
+		  
+		  const speak = (text) => {
+		  if (synth.speaking) {
+			  console.error('Busy. Speaking...');
+			  return;
+		  }
+		  
+		  const utter = new SpeechSynthesisUtterance(text);
+		  
+		  utter.onend = () => {
+			  console.log('SpeechSynthesisUtterance.onend');
+		  }
+		  utter.onerror = (err) => {
+			  console.error('SpeechSynthesisUtterance.onerror', err);
+		  }
+		  
+		  synth.speak(utter);
+		  };
+		  
+		  const handleVoice = (text) => {
+		  console.log('text', text);
+		  
+		  // "thời tiết tại Đà Nẵng" => ["thời tiết tại", "Đà Nẵng"]
+		  const handledText = text.toLowerCase();
+		  if (handledText.includes('thời tiết tại')) {
+			  const location = handledText.split('tại')[1].trim();
+		  
+			  console.log('location', location);
+			  searchInput.value = location;
+			  const changeEvent = new Event('change');
+			  searchInput.dispatchEvent(changeEvent);
+			  return;
+		  }
+		  
+		  const container = document.querySelector('.container');
+		  if (handledText.includes('thay đổi màu nền')) {
+			  const color = handledText.split('màu nền')[1].trim();
+			  container.style.background = color;
+			  return;
+		  }
+		  
+		  if (handledText.includes('màu nền mặc định')) {
+			  container.style.background = '';
+			  return;
+		  }
+  let shouldSpeak = false;
+  if (handledText.includes('nhiệt độ')) {
+	  shouldSpeak = true;
+	  tempRef.on("value", function(snapshot) {
+		  var temperature = snapshot.val();
+		  document.getElementById("temperature").innerHTML = temperature;
+		  if (shouldSpeak) {
+			  let msg = new SpeechSynthesisUtterance("The current temperature is " + temperature + " degrees Celsius.");
+			  window.speechSynthesis.speak(msg);
+			  shouldSpeak = false; // set flag to false to avoid continuous speaking
+		  }
+	  });
+	  return;
+  }		
+			  let shouldSpeak1 = false;
+			if (handledText.includes('độ ẩm')) {
+			  shouldSpeak1 = true;
+			  humidRef.on("value", function(snapshot) {
+				  if (shouldSpeak1) {
+				  var humidity = snapshot.val();
+				  document.getElementById("humidity").innerHTML = humidity;
+				  var msg = new SpeechSynthesisUtterance("The current humidity is " + humidity + " percent.");
+				  window.speechSynthesis.speak(msg);
+				  shouldSpeak1 = false;}
+				});
+				
+			   return;
+			}
+			let shouldSpeak2 = false;
+			if (handledText.includes('ánh sáng')) {
+			  shouldSpeak2 = true;
+			  soilRef.on("value", function(snapshot) { 
+				  if (shouldSpeak2) {
+				  var light = snapshot.val();
+				  document.getElementById("light").innerHTML = light;
+				  var msg = new SpeechSynthesisUtterance("The current light level is " + light + ".");
+				  window.speechSynthesis.speak(msg);
+				  shouldSpeak2 = false;}
+				});
+				
+			   return;
+			}
+			let shouldSpeak3 = false;
+			if (handledText.includes('con bò')) {
+			  shouldSpeak3 = true;
+			  soilRef.on("value", function(snapshot) { 
+				  if (shouldSpeak3) {
+				  var soil = snapshot.val();
+				  document.getElementById("soil").innerHTML = soil;
+				  var msg = new SpeechSynthesisUtterance("The current soil moisture level is " + soil + ".");
+				  window.speechSynthesis.speak(msg);
+				  shouldSpeak3 = false;}
+				});
+				
+			   return;
+			}
+		  const toggleBtn = document.querySelector('.toggle-btn');
+		  if (handledText.includes('bật quạt')) {
+			if (!isLightOn) { // Chỉ bật đèn nếu nó chưa được bật trước đó
+			  toggleBtn.click();
+			  isLightOn = true;
+			}
+			 return;
+		  }
+		  if (handledText.includes('tắt quạt')) {
+			if (isLightOn) { // Chỉ bật đèn nếu nó chưa được bật trước đó
+			  toggleBtn.click();
+			  isLightOn = false;
+			}
+			 return;
+		  
+		  }
+		  const toggleBtn1 = document.querySelector('.toggle-btn1');
+		  if (handledText.includes('bật đèn')) {
+			if (!isLightOn1) { // Chỉ bật đèn nếu nó chưa được bật trước đó
+			  toggleBtn1.click();
+			  isLightOn1 = true;
+			}
+			 return;
+		  
+		  }
+		  if (handledText.includes('tắt đèn')) {
+			if (isLightOn1) { // Chỉ bật đèn nếu nó chưa được bật trước đó
+			  toggleBtn1.click();
+			  isLightOn1 = false;
+			}
+			 return;
+		  
+		  }
+		  const toggleBtn2 = document.querySelector('.toggle-btn2');
+		  if (handledText.includes('bật nước')) {
+			if (!isLightOn2) { // Chỉ bật đèn nếu nó chưa được bật trước đó
+			  toggleBtn2.click();
+			  isLightOn2 = true;
+			}
+			 return;
+		  
+		  }
+		  
+		  if (handledText.includes('tắt nước')) {
+			if (isLightOn2) { // Chỉ bật đèn nếu nó chưa được bật trước đó
+			  toggleBtn2.click();
+			  isLightOn2 = false;
+			}
+			 return;
+		  
+		  }
+		  const toggleBtn3 = document.querySelector('.toggle-btn3');
+		  if (handledText.includes('bật bơm')) {
+			if (!isLightOn3) { // Chỉ bật đèn nếu nó chưa được bật trước đó
+			  toggleBtn3.click();
+			  isLightOn3 = true;
+			}
+			 return;
+		  
+		  }
+		  if (handledText.includes('tắt bơm')) {
+			if (isLightOn3) { // Chỉ bật đèn nếu nó chưa được bật trước đó
+			  toggleBtn3.click();
+			  isLightOn3 = false;
+			}
+			 return;
+		  
+		  }
+		  if (handledText.includes('hi hi')) {
+			const svg = document.querySelectorAll(".menu__item")[0];; // Lấy phần tử SVG
+			svg.dispatchEvent(new Event('click')); // Gửi sự kiện click vào phần tử SVG
+			return;
+		  }
+		  if (handledText.includes('ha ha')) {
+			const svg = document.querySelectorAll(".menu__item")[1];; // Lấy phần tử SVG
+			svg.dispatchEvent(new Event('click')); // Gửi sự kiện click vào phần tử SVG
+			return;
+		  }
+		  if (handledText.includes('hu hu')) {
+			const svg = document.querySelectorAll(".menu__item")[2];; // Lấy phần tử SVG
+			svg.dispatchEvent(new Event('click')); // Gửi sự kiện click vào phần tử SVG
+			return;
+		  }
+		  if (handledText.includes('menu')) {
+			const svgg = document.querySelector(".button")
+			svgg.dispatchEvent(new Event('click')); // Gửi sự kiện click vào phần tử menu
+			return;
+		  } 
+		  if (handledText.includes('cụ thể')) {
+			const svgg = document.querySelector("#btn")
+			svgg.dispatchEvent(new Event('click')); // Gửi sự kiện click vào phần tử menu
+			return;
+		  } 
+		
+		  }
+		  tempRef.on("value", function(snapshot) {
+			  var temperature = snapshot.val();
+			  document.getElementById("temperature").innerHTML = temperature;
+			  if (temperature > 40) {
+				  let msg = new SpeechSynthesisUtterance("Cảnh báo! Nhiệt độ đang vượt quá 40 độ C");
+				  window.speechSynthesis.speak(msg);
+			  }
+		  });
+		  
+		  
+		  microphone.addEventListener('click', (e) => {
+		  e.preventDefault();
+		  
+		  recognition.start();
+		  microphone.classList.add('recording');
+		  });
+		  
+		  recognition.onspeechend = () => {
+		  recognition.stop();
+		  microphone.classList.remove('recording');
+		  }
+		  
+		  recognition.onerror = (err) => {
+		  console.error(err);
+		  microphone.classList.remove('recording');
+		  }
+		  
+		  recognition.onresult = (e) => {
+		  console.log('onresult', e);
+		  const text = e.results[0][0].transcript;
+		  handleVoice(text);
+		  }
+	  </script>
+	  
+</section>
+
+
+  <section id="ROOM4" style="display:none">
+	<div class='tableauPlaceholder' id='viz1684061168525' style='position: relative'><noscript><a href='#'><img alt='VIET NAM 7 DAYS ATMOSTPHERE ' src='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;da&#47;datascience_dashboard&#47;Dashboard1&#47;1_rss.png' style='border: none' /></a></noscript><object class='tableauViz'  style='display:none;'><param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' /> <param name='embed_code_version' value='3' /> <param name='site_root' value='' /><param name='name' value='datascience_dashboard&#47;Dashboard1' /><param name='tabs' value='no' /><param name='toolbar' value='yes' /><param name='static_image' value='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;da&#47;datascience_dashboard&#47;Dashboard1&#47;1.png' /> <param name='animate_transition' value='yes' /><param name='display_static_image' value='yes' /><param name='display_spinner' value='yes' /><param name='display_overlay' value='yes' /><param name='display_count' value='yes' /><param name='language' value='en-US' /></object></div>                <script type='text/javascript'>                    var divElement = document.getElementById('viz1684061168525');                    var vizElement = divElement.getElementsByTagName('object')[0];                    if ( divElement.offsetWidth > 800 ) { vizElement.style.width='980px';vizElement.style.height='700px';} else if ( divElement.offsetWidth > 500 ) { vizElement.style.width='980px';vizElement.style.height='700px';} else { vizElement.style.width='100%';vizElement.style.height='1977px';}                     var scriptElement = document.createElement('script');                    scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';                    vizElement.parentNode.insertBefore(scriptElement, vizElement);                </script>
+  </section>
+</div>
+
+
+</body> 
+
+</html>
